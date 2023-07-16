@@ -1,0 +1,21 @@
+<%- include("header") -%>
+
+<form class="contact" >
+  <h2>Contact us </h2>
+  <div >
+    <label for="name">Enter your Name</label>
+    <input type="text" class="form-control" id="name" placeholder="name">
+  </div>
+  <div >
+    <label for="email">Enter your Email address</label>
+    <input type="email" class="form-control" id="email" placeholder="name@example.com">
+  </div>
+
+  <div class="form-group">
+    <label for="exampleFormControlTextarea1">Message</label>
+    <textarea class="form-control" id="message" rows="10"></textarea>
+    <button class="btn btn-primary" onclick="sendMail()">Send</button>
+  </div
+</form>
+
+<%- include("footer") -%>

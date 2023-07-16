@@ -1,0 +1,15 @@
+<%- include("header") -%>
+
+<h1>Calculate your BMI</h1>
+ <form action="/calculate" method="POST">
+   <label for="weight">Weight (kg):</label>
+   <input type="text" id="weight" name="weight" required>
+
+   <label for="height">Height (m):</label>
+   <input type="text" id="height" name="height" required>
+
+   <button type="submit">Calculate BMI</button>
+ </form>
+
+    <!-- <h2>Your BMI: = bmi</h2> -->
+<%- include("footer") -%>
