@@ -1,69 +1,80 @@
 const express = require("express");
 const _ = require("lodash");
 const bodyParser = require('body-parser');
-const mongoose = require("mongoose");
+const mongoose =require("mongoose");
 const session = require('express-session');
 const bcrypt = require('bcrypt');
 
 // app functionality with express and body-parser
 const app = express();
-app.use(bodyParser.urlencoded({
-  extended: true
-}));
+app.set('view engine', 'ejs');
+
+app.use(bodyParser.urlencoded({  extended: true }));
+app.use(express.static("public"));
 
 // connecting mongoose
-// mongoose.connect('mongodb://localhost:27017/logDB', {
+const mongoURL = 'mongodb://0.0.0.0:27017/users';
+
+mongoose.connect(mongoURL, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+})
+// mongoose.connect('mongodb://localhost:27017/users', {
 //   useNewUrlParser: true,
 //   useUnifiedTopology: true,
 // });
 
 // Defining Schema
-// const loginSchema = new mongoose.Schema({
-//   userName: String,
-//   Password: String
-// });
+const loginSchema = new mongoose.Schema({
+  userName: String,
+  Password: String
+});
 
+
+var Exist = "";
 // creatig a model
-// const User = mongoose.model('User', loginSchema);
-
-// // to check if user exist or not
-// async function checkIfUserExists(username, password) {
+const User = mongoose.model('User', loginSchema);
 
 
-
-// app.post('/signup', async function( req , res ){
-//   const {name , password} = req.body;
-//   User.findOne({ name : name , password : password} ,async function(err , foundUser){
-//     if(foundUser){
-//       res.render('Home');
-//     }
-//     else{
-//       const newUser = new User({ name : name, password :password} );
-//       newUser.save();
-//       res.render('Home');
-//     }
-//   })
-// })
+app.post('/signup', async function( req , res ){
+  const {name , password} = req.body;
+  console.log( name);
+  console.log(password);
+  User.findOne({ userName : name , Password : password} ,async function(err , foundUser){
+    if(foundUser){
+      Exist = " User already exist sign-in to continue ";
+      // alert("User already exist signin to continue");
+      res.render('signin' , { Exist});
+      Exist = "";
+    }
+    else{
+      const newUser = new User({ userName : name, Password :password} );
+      newUser.save();
+      res.render('Home');
+    }
+  })
+})
 //
 //
 // //
-//     app.post('/signin', async function(req, res) {
-//       const {
-//         name,
-//         password
-//       } = req.body;
-//       if (userExists) {
-//         res.render('Home');
-//       } else {
-//         res.render('signup');
-//       }
-//       console.log(name);
-//       console.log(password);
-//     });
+    app.post('/signin', async function(req, res) {
+      const {name ,  password } = req.body;
+      User.findOne({ userName : name , Password : password} ,async function(err , foundUser){
+        if(foundUser){
+          Exist = " User already exist sign-in to continue ";
+          // alert("User already exist signin to continue");
+          res.render('Home');
+        }
+        else{
+          Exist = " User doesn't exist sign-up to continue";
+          res.render('Signup' , { Exist});
+          Exist = "";
+        }
+      })
 
-//  setting our app and ejs
-app.set('view engine', 'ejs');
-app.use(express.static("public"));
+    });
+
+
 
 
 // Different  Route
@@ -80,10 +91,10 @@ app.get('/Contactus', (req, res) => {
   res.render('Contactus');
 });
 app.get('/signup', (req, res) => {
-  res.render('signup');
+  res.render('signup' , { Exist});
 });
 app.get('/signin', (req, res) => {
-  res.render('signin');
+  res.render('signin', {Exist});
 });
 
 
